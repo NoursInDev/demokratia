@@ -3,14 +3,13 @@ package main
 import (
 	"fmt"
 	"os"
-
 	"github.com/bwmarrin/discordgo"
 )
 
 var (
-	idOwner  = "YOUR_OWNER_ID"
-	idAdmin  = "YOUR_ADMIN_ROLE_ID"
-	token    = "YOUR_BOT_TOKEN"
+	idOwner  = "675016635869954075"
+	idAdmin  = "1162432736091455600"
+	token    = "---"
 )
 
 func main() {
