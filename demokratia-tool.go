@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -19,7 +18,7 @@ func main() {
 		return
 	}
 
-	dg.AddMessageCreateHandler(messageCreate)
+	dg.AddHandler(messageCreate) // Modifiez cette ligne
 
 	err = dg.Open()
 	if err != nil {
@@ -30,6 +29,7 @@ func main() {
 	fmt.Println("Bot actif. Appuyez sur CTRL+C pour quitter.")
 	select {}
 }
+
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == idOwner {
