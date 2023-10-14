@@ -111,6 +111,7 @@ func main() {
 		}
 	})
 
+
 	err = dg.Open()
 	if err != nil {
 		fmt.Println("Erreur lors de l'ouverture de la session DiscordGo:", err)
