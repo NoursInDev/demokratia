@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"strconv"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -67,6 +68,44 @@ func main() {
 					}
 				} else {
 					s.ChannelMessageSend(m.ChannelID, "Le format valide de l'utilisateur est <@id>")
+				}
+			}
+		}
+	})
+
+	dg.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate){
+		if m.Author.ID == OwnerID {
+			// Vérifie si le message commence par "+clear"
+			if strings.HasPrefix(m.Content, "+clear") {
+				// Divise le message en mots
+				parts := strings.Fields(m.Content)
+	
+				// Vérifie qu'il y a au moins deux parties dans le message
+				if len(parts) >= 2 {
+					// Essaie de convertir la deuxième partie en un nombre
+					numMessages, err := strconv.Atoi(parts[1])
+					if err == nil && numMessages > 0 {
+						// Récupère les messages dans le canal
+						messages, getErr := s.ChannelMessages(m.ChannelID, numMessages, "", "", "")
+						if getErr != nil {
+							fmt.Printf("Erreur lors de la récupération des messages: %v\n", getErr)
+							return
+						}
+	
+						// Supprime les messages
+						for _, message := range messages {
+							delErr := s.ChannelMessageDelete(m.ChannelID, message.ID)
+							if delErr != nil {
+								fmt.Printf("Erreur lors de la suppression du message %s: %v\n", message.ID, delErr)
+							}
+						}
+	
+						fmt.Printf("Suppression de %d messages dans le canal %s\n", numMessages, m.ChannelID)
+					} else {
+						s.ChannelMessageSend(m.ChannelID, "Veuillez spécifier un nombre valide de messages à supprimer.")
+					}
+				} else {
+					s.ChannelMessageSend(m.ChannelID, "Utilisation: +clear x (où x est le nombre de messages à supprimer)")
 				}
 			}
 		}
