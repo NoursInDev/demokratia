@@ -24,17 +24,23 @@ func main() {
 		if m.Author.ID == OwnerID {
 			// Vérifiez si le message commence par "+admin add"
 			if strings.HasPrefix(m.Content, "+admin add ") {
-				// Extrait l'ID de l'utilisateur mentionné dans le message
-				mention := m.Mentions[0]
-				id_user := mention.ID
-
-				// Ajoute le rôle d'administrateur à l'utilisateur
-				err := s.GuildMemberRoleAdd(m.GuildID, id_user, AdminID)
-				if err != nil {
-					fmt.Println("Erreur lors de l'ajout du rôle :", err)
-					s.ChannelMessageSend(m.ChannelID, "Erreur lors de l'ajout du rôle.")
+				if strings.HasPrefix(m.Content, "+admin add <@") && strings.HasSuffix(m.Content, ">") {
+					if len(m.Mentions) == 0 {
+						s.ChannelMessageSend(m.ChannelID, "Aucune mention d'utilisateur trouvée dans le message.")
+						return
+					}
+					// Extrait l'ID de l'utilisateur mentionné dans le message
+					id_user := m.Mentions[0].ID
+					// Ajoute le rôle d'administrateur à l'utilisateur
+					err := s.GuildMemberRoleAdd(m.GuildID, id_user, AdminID)
+					if err != nil {
+						fmt.Println("Erreur lors de l'ajout du rôle :", err)
+						s.ChannelMessageSend(m.ChannelID, "Erreur lors de l'ajout du rôle.")
+					} else {
+						s.ChannelMessageSend(m.ChannelID, "Rôle d'administrateur ajouté à l'utilisateur.")
+					}
 				} else {
-					s.ChannelMessageSend(m.ChannelID, "Rôle d'administrateur ajouté à l'utilisateur.")
+					s.ChannelMessageSend(m.ChannelID, "Le format valide de l'utilisateur est <@id>")
 				}
 			}
 		}
@@ -43,18 +49,24 @@ func main() {
 	dg.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if m.Author.ID == OwnerID {
 			// Vérifiez si le message commence par "+admin add"
-			if strings.HasPrefix(m.Content, "+admin rm ") {
-				// Extrait l'ID de l'utilisateur mentionné dans le message
-				mention := m.Mentions[0]
-				id_user := mention.ID
-
-				// Ajoute le rôle d'administrateur à l'utilisateur
-				err := s.GuildMemberRoleRemove(m.GuildID, id_user, AdminID)
-				if err != nil {
-					fmt.Println("Erreur lors de l'ajout du rôle :", err)
-					s.ChannelMessageSend(m.ChannelID, "Erreur lors de l'ajout du rôle.")
+			if strings.HasPrefix(m.Content, "+admin rm ") || strings.HasPrefix(m.Content, "+admin remove ") {
+				if (strings.HasPrefix(m.Content, "+admin rm <@") || strings.HasPrefix(m.Content, "+admin remove <@")) && strings.HasSuffix(m.Content, ">") {
+					if len(m.Mentions) == 0 {
+                    s.ChannelMessageSend(m.ChannelID, "Aucune mention d'utilisateur trouvée dans le message.")
+                    return
+                }
+					// Extrait l'ID de l'utilisateur mentionné dans le message
+					id_user := m.Mentions[0].ID
+					// Retire le rôle d'administrateur à l'utilisateur
+					err := s.GuildMemberRoleRemove(m.GuildID, id_user, AdminID)
+					if err != nil {
+						fmt.Println("Erreur lors de la suppression du rôle :", err)
+						s.ChannelMessageSend(m.ChannelID, "Erreur lors de la suppression du rôle.")
+					} else {
+						s.ChannelMessageSend(m.ChannelID, "Rôle d'administrateur retiré à l'utilisateur.")
+					}
 				} else {
-					s.ChannelMessageSend(m.ChannelID, "Rôle d'administrateur retiré à l'utilisateur.")
+					s.ChannelMessageSend(m.ChannelID, "Le format valide de l'utilisateur est <@id>")
 				}
 			}
 		}
@@ -65,7 +77,7 @@ func main() {
 		fmt.Println("Erreur lors de l'ouverture de la session DiscordGo:", err)
 		return
 	}
-	fmt.Println("Bot démarré.")
+	fmt.Println("Bot démarré, Ctrl-C pour quitter.")
 
 	select {}
 }
