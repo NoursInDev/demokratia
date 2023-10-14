@@ -7,6 +7,7 @@ Un bot discord démocratique ! Créé et mis à jour pour le groupe discord de 1
 
 
 ## Documentation
+* Il est nécéssaire d'être désigné comme owner dans les fichiers pour utiliser les commandes actuelles. *
 #### Ajouter un administrateur
 - +admin add <@id>
 #### Supprimer un administrateur
