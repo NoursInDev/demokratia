@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	BotToken := "MTE2MjQzMzQ4ODE0MjczMzM3Mw.GJIaj3.1t6Nn5xiJ1IObGU-08QWso6erMZlzRUPBf2yjg" // Token Bot
+	BotToken := "---" // Token Bot
 	OwnerID := "675016635869954075"   // Owner ID
 	AdminID := "1162432736091455600" // Admin role ID
 	//MemberID := "1163118801915760720"
